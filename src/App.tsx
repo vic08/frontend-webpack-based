@@ -20,6 +20,7 @@ class App extends React.Component {
               <img src={logo} className='App-logo' alt='logo' />
               <h1 className='App-title'>Welcome to React</h1>
               <Link to={'/'}>Main</Link>
+              &nbsp;
               <Link to={'/about'}>About</Link>
             </header>
             <Route path={`/`} component={Main}/>
