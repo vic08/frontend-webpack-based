@@ -1,15 +1,10 @@
 import * as React from 'react'
 
-type ComponentChunkLoader = () => any // todo: define return type properly
+type ComponentChunkLoader = () => any // todo: is there a way to define type for dynamic `import()`
 
 export enum Context {
   Main = 'Main',
   About = 'About'
-}
-
-const CONTEXT_LOADERS: { [name: string]: ComponentChunkLoader } = {
-  [Context.Main]: () => import('../../pages/Main/Main'),
-  [Context.About]: () => import('../../pages/About/About')
 }
 
 interface Props {
@@ -18,6 +13,11 @@ interface Props {
 
 interface State {
   Component: React.ComponentClass<{}> | React.StatelessComponent<{}> | null
+}
+
+const CONTEXT_LOADERS: { [name: string]: ComponentChunkLoader } = {
+  [Context.Main]: () => import('../../pages/Main/Main'),
+  [Context.About]: () => import('../../pages/About/About')
 }
 
 class ComponentLoader extends React.PureComponent<Props, State> {
