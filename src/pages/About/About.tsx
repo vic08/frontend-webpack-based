@@ -11,9 +11,8 @@ export type Props = {
 class About extends React.PureComponent<Props> {
 
   render () {
-    return <div className='main'>
+    return <div className='about'>
       This is about page
-
     </div>
   }
 
