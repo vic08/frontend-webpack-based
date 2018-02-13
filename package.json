@@ -46,7 +46,7 @@
   "scripts": {
     "start": "REACT_APP_DEVELOPMENT=true node scripts/start.js",
     "build": "REACT_APP_DEVELOPMENT=false node scripts/build.js",
-    "test": "REACT_APP_DEVELOPMENT=true node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom"
   },
   "devDependencies": {
     "@types/jest": "^22.1.2",
@@ -99,6 +99,7 @@
       "node"
     ],
     "globals": {
+      "REACT_APP_DEVELOPMENT": false,
       "ts-jest": {
         "tsConfigFile": "/Users/noname/sites/2018/frontend-webpack-based-cra/tsconfig.test.json"
       }
