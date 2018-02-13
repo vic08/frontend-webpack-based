@@ -229,7 +229,7 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'main',
       children: true,
-      minChunks: 2,
+      minChunks: 2, // todo: consider a smarter logic to define this number during build
       async: 'common'
     }),
     // Makes some environment variables available to the JS code, for example:
