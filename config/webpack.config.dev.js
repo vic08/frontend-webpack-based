@@ -23,6 +23,16 @@ const publicUrl = ''
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl)
 
+function isVendorModule (module) {
+  let context = module.context
+
+  if (typeof context !== 'string') {
+    return false
+  }
+
+  return context.indexOf('node_modules') !== -1
+}
+
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -59,7 +69,7 @@ module.exports = {
     // This does not produce a real file. It's just the virtual path that is
     // served by WebpackDevServer in development. This is the JS bundle
     // containing code from all our entry points, and the Webpack runtime.
-    filename: 'static/js/bundle.js',
+    filename: 'static/js/bundle.[name].js',
     // There are also additional JS chunk files if you use code splitting.
     chunkFilename: 'static/js/[name].chunk.js',
     // This is the URL that app is served from. We use "/" in development.
@@ -226,12 +236,18 @@ module.exports = {
     }),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),
+
     new webpack.optimize.CommonsChunkPlugin({
       name: 'main',
       children: true,
-      minChunks: 2, // todo: consider a smarter logic to define this number during build
+      minChunks: (module, count) => !isVendorModule(module) && count >= 2, // todo: consider a smarter logic to define this number during build
       async: 'common'
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendors',
+      minChunks: isVendorModule
+    }),
+
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
     new webpack.DefinePlugin(env.stringified),

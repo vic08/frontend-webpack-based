@@ -46,6 +46,16 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
   ? {publicPath: Array(cssFilename.split('/').length).join('../')}
   : {}
 
+function isVendorModule (module) {
+  let context = module.context
+
+  if (typeof context !== 'string') {
+    return false
+  }
+
+  return context.indexOf('node_modules') !== -1
+}
+
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
 // The development configuration is different and lives in a separate file.
@@ -113,12 +123,6 @@ module.exports = {
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'main',
-        children: true,
-        minChunks: 2,
-        async: 'common'
-      }),
       new TsconfigPathsPlugin({configFile: paths.appTsConfig})
     ]
   },
@@ -272,6 +276,18 @@ module.exports = {
     // It is absolutely essential that NODE_ENV was set to production here.
     // Otherwise React will be compiled in the very slow development mode.
     new webpack.DefinePlugin(env.stringified),
+
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'main',
+      children: true,
+      minChunks: (module, count) => (!isVendorModule(module) && count >= 2),
+      async: 'common'
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendors',
+      minChunks: isVendorModule
+    }),
+
     // Minify the code.
     new webpack.optimize.UglifyJsPlugin({
       compress: {
