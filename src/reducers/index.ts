@@ -1,10 +1,9 @@
-import { combineReducers } from 'redux'
+import { combineReducers, Action } from 'redux'
 import { LOAD_COINMARKET_DATA_SUCCESS } from '../constants/actionTypes'
 import { routerReducer, RouterState } from 'react-router-redux'
-import { Action } from 'redux'
 import { LoadCryptoDataAction } from '../actions'
 
-export type GlobalStore = Readonly<{
+export type RootState = Readonly<{
   something: string,
   shmamfing: string,
   cryptoData: Readonly<{
@@ -19,7 +18,7 @@ export type GlobalStore = Readonly<{
   router: RouterState | null
 }>
 
-export const defaultState: GlobalStore = {
+export const defaultState: RootState = {
   something: 'something',
   shmamfing: 'shmamging',
   cryptoData: null,
@@ -27,11 +26,11 @@ export const defaultState: GlobalStore = {
 }
 
 // todo: use redux interface for actions
-export default combineReducers<GlobalStore>({
+export default combineReducers<RootState>({
 
   router: routerReducer,
 
-  something: (state: GlobalStore['something'] = defaultState.something, action) => state,
+  something: (state: RootState['something'] = defaultState.something, action) => state,
 
   shmamfing: (state = defaultState.shmamfing, action: Action) => state,
 

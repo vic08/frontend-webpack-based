@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { GlobalStore } from '../../reducers'
+import { RootState } from '../../reducers'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { requestCoinmarketData } from '../../actions'
 
 export type Props = {
-  cryptoData: GlobalStore['cryptoData'],
-  dispatch: Dispatch<GlobalStore>
+  cryptoData: RootState['cryptoData'],
+  dispatch: Dispatch<RootState>
 }
 
 class Main extends React.PureComponent<Props> {
@@ -25,4 +25,4 @@ class Main extends React.PureComponent<Props> {
   }
 }
 
-export default connect((state: GlobalStore) => ({ cryptoData: state.cryptoData }))(Main)
+export default connect((state: RootState) => ({ cryptoData: state.cryptoData }))(Main)

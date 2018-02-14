@@ -4,14 +4,14 @@ import { routerMiddleware } from 'react-router-redux'
 import createHistory from 'history/createBrowserHistory'
 
 import thunk from 'redux-thunk'
-import rootReducer, { GlobalStore } from './reducers/'
+import rootReducer, { RootState } from './reducers/'
 import { createLogger } from 'redux-logger'
 
 let history = createHistory()
-let store: Store<GlobalStore>
+let store: Store<RootState>
 
 if (REACT_APP_DEVELOPMENT) {
-  store = createStore<GlobalStore>(
+  store = createStore<RootState>(
     rootReducer,
     applyMiddleware(
       thunk,
@@ -24,7 +24,7 @@ if (REACT_APP_DEVELOPMENT) {
     )
   )
 } else {
-  store = createStore<GlobalStore>(
+  store = createStore<RootState>(
     rootReducer,
     applyMiddleware(
       thunk,
