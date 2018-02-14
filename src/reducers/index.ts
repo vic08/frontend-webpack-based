@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux'
 import { LOAD_COINMARKET_DATA_SUCCESS } from '../constants/actionTypes'
 import { routerReducer, RouterState } from 'react-router-redux'
-// import { DispatchProp } from 'react-redux'
+import { Action } from 'redux'
+import { LoadCryptoDataAction } from '../actions'
 
-// todo: Global store type will consist of sub reducer store types
-export type GlobalStore = {
+export type GlobalStore = Readonly<{
   something: string,
   shmamfing: string,
-  cryptoData: {
+  cryptoData: Readonly<{
     'total_market_cap_usd': number,
     'total_24h_volume_usd': number,
     'bitcoin_percentage_of_market_cap': number,
@@ -15,11 +15,9 @@ export type GlobalStore = {
     'active_assets': number,
     'active_markets': number,
     'last_updated': number
-  } | null,
+  }> | null,
   router: RouterState | null
-}
-
-// export type ReduxStore = GlobalStore & DispatchProp<GlobalStore>
+}>
 
 export const defaultState: GlobalStore = {
   something: 'something',
@@ -28,16 +26,16 @@ export const defaultState: GlobalStore = {
   router: null
 }
 
-// todo: define interface for actions
+// todo: use redux interface for actions
 export default combineReducers<GlobalStore>({
 
   router: routerReducer,
 
-  something: (state = defaultState.something, action) => state,
+  something: (state: GlobalStore['something'] = defaultState.something, action) => state,
 
-  shmamfing: (state = defaultState.shmamfing, action) => state,
+  shmamfing: (state = defaultState.shmamfing, action: Action) => state,
 
-  cryptoData: (state = defaultState.cryptoData, action) => {
+  cryptoData: (state = defaultState.cryptoData, action: LoadCryptoDataAction) => {
     if (action.type === LOAD_COINMARKET_DATA_SUCCESS) {
       return { ...state, ...action.cryptoData }
     }
