@@ -1,6 +1,7 @@
 import { combineReducers, Action } from 'redux'
 import { LOAD_COINMARKET_DATA_SUCCESS } from '../constants/actionTypes'
 import { routerReducer, RouterState } from 'react-router-redux'
+import { apolloReducer } from 'apollo-cache-redux'
 import { LoadCryptoDataAction } from '../actions'
 
 export type RootState = Readonly<{
@@ -15,10 +16,24 @@ export type RootState = Readonly<{
     'active_markets': number,
     'last_updated': number
   }> | null,
-  router: RouterState | null
+  router: RouterState | null,
+  apollo: ApolloSchema
+}>
+
+export type ApolloSchema = Readonly<{
+  allPeople: Person[]
+}>
+
+export type Person = Readonly<{
+  id: number,
+  firstName: string,
+  lastName: string
 }>
 
 export const defaultState: RootState = {
+  apollo: {
+    allPeople: []
+  },
   something: 'something',
   shmamfing: 'shmamging',
   cryptoData: null,
@@ -29,6 +44,8 @@ export const defaultState: RootState = {
 export default combineReducers<RootState>({
 
   router: routerReducer,
+
+  apollo: (state: RootState['apollo'] = defaultState.apollo, action: Action) => apolloReducer(state, action),
 
   something: (state: RootState['something'] = defaultState.something, action) => state,
 

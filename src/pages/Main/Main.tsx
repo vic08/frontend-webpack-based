@@ -3,8 +3,12 @@ import { RootState } from '../../reducers'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { requestCoinmarketData } from '../../actions'
+import { flow } from 'lodash'
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
 
 export type Props = {
+  apollo: any,
   cryptoData: RootState['cryptoData'],
   dispatch: Dispatch<RootState>
 }
@@ -25,4 +29,28 @@ class Main extends React.PureComponent<Props> {
   }
 }
 
-export default connect((state: RootState) => ({ cryptoData: state.cryptoData }))(Main)
+const dataQuery = gql`
+  {
+    query {
+      allPeople(first: 100) {
+        nodes {
+          id,
+          nodeId,
+          firstName,
+          lastName,
+          about,
+          createdAt,
+          updatedAt
+        }
+      }
+    }
+  }
+`
+
+export default flow(
+  connect((state: RootState) => ({
+    cryptoData: state.cryptoData,
+    apollo: state.apollo
+  })),
+  graphql(dataQuery)
+)(Main)
