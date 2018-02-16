@@ -1,19 +1,21 @@
 import * as React from 'react'
 import './App.css'
-import { Link, Route } from 'react-router-dom'
-import { ConnectedRouter } from 'react-router-redux'
-import { Provider } from 'react-redux'
-import store, { history } from './store'
+import { Router, Link, Route } from 'react-router-dom'
+import apolloClient from './api/apolloClient'
 import ComponentLoader, { Context } from './components/ComponentLoader/ComponentLoader'
+import { ApolloProvider } from 'react-apollo'
+import { createBrowserHistory } from 'history'
 
 const logo = require('./logo.svg')
+
+export const history = createBrowserHistory()
 
 class App extends React.Component {
 
   render () {
     return (
-      <Provider store={store}>
-        <ConnectedRouter history={history}>
+      <ApolloProvider client={apolloClient}>
+        <Router history={history}>
           <div className='App'>
             <header className='App-header'>
               <img src={logo} className='App-logo' alt='logo'/>
@@ -25,8 +27,8 @@ class App extends React.Component {
             <Route exact path={`/`} render={() => <ComponentLoader contextName={Context.Main}/>}/>
             <Route path={`/about`} render={() => <ComponentLoader contextName={Context.About}/>}/>
           </div>
-        </ConnectedRouter>
-      </Provider>
+        </Router>
+      </ApolloProvider>
     )
   }
 }

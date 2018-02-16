@@ -1,28 +1,40 @@
 import * as React from 'react'
-import { RootState } from '../../reducers'
-import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
-import { requestCoinmarketData } from '../../actions'
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
 
-export type Props = {
-  cryptoData: RootState['cryptoData'],
-  dispatch: Dispatch<RootState>
-}
+export type Props = {}
 
 class Main extends React.PureComponent<Props> {
 
-  componentDidMount () {
-    if (!this.props.cryptoData) {
-      this.props.dispatch(requestCoinmarketData())
-    }
+  // componentDidMount () {}
+
+  componentWillReceiveProps (nextProps) {
+    debugger
   }
 
   render () {
     return <div className='main'>
       This is main page
-      {this.props.cryptoData !== null ? this.props.cryptoData.active_currencies : 'Loading data...'}
     </div>
   }
 }
 
-export default connect((state: RootState) => ({ cryptoData: state.cryptoData }))(Main)
+const dataQuery = gql`
+  {
+    query {
+      allPeople(first: 100) {
+        nodes {
+          id,
+          nodeId,
+          firstName,
+          lastName,
+          about,
+          createdAt,
+          updatedAt
+        }
+      }
+    }
+  }
+`
+
+export default graphql(dataQuery)(Main)
