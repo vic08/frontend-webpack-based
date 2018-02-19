@@ -1,32 +1,11 @@
 import * as React from 'react'
 import { graphql, QueryProps } from 'react-apollo'
 import gql from 'graphql-tag'
+import { MainDataQuery } from '@@types'
 
 export type Props = {
-  data: Response
-}
-
-export type Response = {
-  allPeople: {
-    nodes: Array<{
-      // The primary unique identifier for the person.
-      id: number,
-      // A globally unique identifier. Can be used in various places throughout the system to identify this single value.
-      nodeId: string,
-      // The person’s first name.
-      firstName: string,
-      // The person’s last name.
-      lastName: string | null,
-      // A short description about the user, written by the user.
-      about: string | null,
-      // The time this person was created.
-      createdAt: string | null,
-      updatedAt: string | null
-    }>
-  }
-}
-
-type WrappedProps = Props & QueryProps
+  data: MainDataQuery
+} & QueryProps
 
 const query = gql`
   query MainData {
@@ -44,11 +23,9 @@ const query = gql`
   }
 `
 
-const withData = graphql<Response, {}, WrappedProps>(query)
+const withData = graphql<MainDataQuery, {}, Props>(query)
 
-class Main extends React.PureComponent<WrappedProps> {
-
-  // componentDidMount () {}
+class Main extends React.PureComponent<Props> {
 
   // componentWillReceiveProps (nextProps) {}
 

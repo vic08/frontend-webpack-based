@@ -47,7 +47,8 @@
     "build": "REACT_APP_DEVELOPMENT=false node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "lint-ts": "tslint --fix --project .",
-    "lint-js": "eslint --ext .jsx,.js --fix"
+    "lint-js": "eslint --ext .jsx,.js --fix",
+    "gen-types": "./scripts/generateQueryTypesTS.sh http://localhost:5000/graphql"
   },
   "devDependencies": {
     "@types/graphql": "^0.12.4",
