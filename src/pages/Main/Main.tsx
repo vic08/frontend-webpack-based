@@ -7,9 +7,11 @@ export type Props = {
   data: MainDataQuery
 } & QueryProps
 
+type InputProps = {}
+
 const query = gql`
-  query MainData {
-    allPeople(first: 100) {
+  query MainData($limit: Int!) {
+    allPeople(first: $limit) {
       nodes {
         id
         nodeId
@@ -23,7 +25,13 @@ const query = gql`
   }
 `
 
-const withData = graphql<MainDataQuery, {}, Props>(query)
+const withData = graphql<MainDataQuery, InputProps, Props>(query, {
+  options: {
+    variables: {
+      limit: 100
+    }
+  }
+})
 
 class Main extends React.PureComponent<Props> {
 
@@ -32,7 +40,7 @@ class Main extends React.PureComponent<Props> {
   render () {
     return <div className='main'>
       This is main page
-      {this.props.data.allPeople ? this.props.data.allPeople.nodes.map(person => person ?
+      {this.props.data && this.props.data.allPeople ? this.props.data.allPeople.nodes.map(person => person ?
         <div key={person.id} className='person'>
           {person.firstName} {person.lastName}
         </div> : null) : null}
