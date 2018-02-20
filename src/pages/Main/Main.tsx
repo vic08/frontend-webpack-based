@@ -1,59 +1,25 @@
 import * as React from 'react'
-import { graphql, QueryProps, compose } from 'react-apollo'
-import gql from 'graphql-tag'
+import { graphql, compose, OptionProps } from 'react-apollo'
 import { MainDataQuery } from '@@types'
+import { mainDataQuery } from '../../state/queries/'
+import { mainPageLocalDataQuery, MainDataLocal } from '../../state/clientQueries'
 
-interface ClientData {
-  networkStatus: {
-    isConnected: boolean | undefined
-  }
-}
-
-export type Props = {
-  data: MainDataQuery & ClientData
-} & QueryProps
+export type Props = OptionProps<{}, MainDataQuery & MainDataLocal>
 
 type InputProps = {}
 
-const query = gql`
-  query MainData($limit: Int!) {
-    allPeople(first: $limit) {
-      nodes {
-        id
-        nodeId
-        firstName
-        lastName
-        about
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`
-
-const localQuery = gql`
-  query MainDataLocal {
-    networkStatus @client {
-        isConnected
-      }
-  }
-`
-
 const withData = compose(
-  graphql<MainDataQuery, InputProps, Props>(query, {
+  graphql<MainDataLocal, {}, Props>(mainPageLocalDataQuery),
+  graphql<MainDataQuery, InputProps, Props>(mainDataQuery, {
     options: {
       variables: {
         limit: 100
       }
     }
-  }),
-  graphql<ClientData, {}, Props>(localQuery)
+  })
 )
 
 class Main extends React.PureComponent<Props> {
-
-  // componentWillReceiveProps (nextProps) {}
-
   render () {
     return <div className='main'>
       This is main page
@@ -62,8 +28,7 @@ class Main extends React.PureComponent<Props> {
           {person.firstName} {person.lastName}
         </div> : null) : null}
       <div>
-        Is
-        connected: {this.props.data.networkStatus.isConnected ? this.props.data.networkStatus.isConnected.toString() : 'false'}
+        Is connected: {this.props.data && this.props.data.networkStatus.isConnected ? this.props.data.networkStatus.isConnected.toString() : 'false'}
       </div>
     </div>
   }

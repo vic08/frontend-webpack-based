@@ -1,45 +1,13 @@
 import * as React from 'react'
-import gql from 'graphql-tag'
 import { graphql, compose, OptionProps } from 'react-apollo'
-import { MainDataQuery } from '@@types'
+import { aboutPageDataLocalQuery, AboutDataLocal, updateNetworkStatusQuery } from '../../state/clientQueries'
 
-interface ClientData {
-  networkStatus: {
-    isConnected: boolean | undefined
-  }
-}
+export type Props = OptionProps<{}, AboutDataLocal>
 
-export type Props = OptionProps<{}, MainDataQuery & ClientData>
-
-const mutation = gql`
-  mutation updateNetworkStatus($isConnected: Boolean) {
-    updateNetworkStatus(isConnected: $isConnected) @client
-  }
-`
-
-const query = gql`
-  query MainData($limit: Int!) {
-    allPeople(first: $limit) {
-      nodes {
-        id
-        nodeId
-        firstName
-        lastName
-        about
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`
-
-const localQuery = gql`
-  query MainDataLocal {
-    networkStatus @client {
-        isConnected
-      }
-  }
-`
+const withData = compose(
+  graphql<{}, {}, Props>(updateNetworkStatusQuery),
+  graphql<AboutDataLocal, {}, Props>(aboutPageDataLocalQuery)
+)
 
 class About extends React.PureComponent<Props> {
 
@@ -65,14 +33,4 @@ class About extends React.PureComponent<Props> {
 
 }
 
-export default compose(
-  graphql<{}, {}, Props>(mutation),
-  graphql<{}, {}, Props>(query, {
-    options: {
-      variables: {
-        limit: 100
-      }
-    }
-  }),
-  graphql<ClientData, {}, Props>(localQuery)
-)(About)
+export default withData(About)

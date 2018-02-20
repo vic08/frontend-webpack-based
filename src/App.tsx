@@ -1,7 +1,7 @@
 import * as React from 'react'
 import './App.css'
 import { Router, Link, Route } from 'react-router-dom'
-import apolloClient from './api/apolloClient'
+import apolloClient from './state/apolloClient'
 import ComponentLoader, { Context } from './components/ComponentLoader/ComponentLoader'
 import { ApolloProvider } from 'react-apollo'
 import { createBrowserHistory } from 'history'

@@ -3,31 +3,15 @@ import { ApolloLink } from 'apollo-link'
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { withClientState } from 'apollo-link-state'
+import clientResolvers from './clientResolvers/'
+import clientDefaults from './clientDefaults/'
 
 const cache = new InMemoryCache()
 
 const stateLink = withClientState({
   cache,
-  resolvers: {
-    Mutation: {
-      updateNetworkStatus: (_, { isConnected }, { cache }) => {
-        const data = {
-          networkStatus: {
-            __typename: 'NetworkStatus',
-            isConnected
-          }
-        }
-        cache.writeData({ data })
-        return null
-      }
-    }
-  },
-  defaults: {
-    networkStatus: {
-      __typename: 'NetworkStatus',
-      isConnected: true
-    }
-  }
+  resolvers: clientResolvers,
+  defaults: clientDefaults
 })
 
 const httpLink = new HttpLink({
@@ -42,5 +26,7 @@ const client = new ApolloClient({
   cache,
   connectToDevTools: REACT_APP_DEVELOPMENT
 })
+
+client.onResetStore(() => Promise.resolve().then(stateLink.writeDefaults))
 
 export default client
