@@ -2,11 +2,11 @@ import * as React from 'react'
 import { graphql, compose, OptionProps } from 'react-apollo'
 import { aboutPageDataLocalQuery, AboutDataLocal, updateNetworkStatusQuery } from '../../state/clientQueries'
 
-export type Props = OptionProps<{}, AboutDataLocal>
+export type Props = OptionProps<{}, {}> & { clientData: AboutDataLocal }
 
 const withData = compose(
   graphql<{}, {}, Props>(updateNetworkStatusQuery),
-  graphql<AboutDataLocal, {}, Props>(aboutPageDataLocalQuery)
+  graphql<AboutDataLocal, {}, Props>(aboutPageDataLocalQuery, { name: 'clientData' })
 )
 
 class About extends React.PureComponent<Props> {
@@ -25,7 +25,7 @@ class About extends React.PureComponent<Props> {
     }
     return <div className='about'>
       This is about page
-      We are {this.props.data.networkStatus.isConnected ? 'online' : 'offline'}
+      We are {this.props.clientData.networkStatus.isConnected ? 'online' : 'offline'}
       <button onClick={this._onSwitchOffline}>go offline</button>
       <button onClick={this._onSwitchOnline}>go online</button>
     </div>

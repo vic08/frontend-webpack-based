@@ -4,19 +4,19 @@ import { MainDataQuery } from '@@types'
 import { mainDataQuery } from '../../state/queries/'
 import { mainPageLocalDataQuery, MainDataLocal } from '../../state/clientQueries'
 
-export type Props = OptionProps<{}, MainDataQuery & MainDataLocal>
+export type Props = OptionProps<{}, MainDataQuery> & { clientData: MainDataLocal}
 
 type InputProps = {}
 
 const withData = compose(
-  graphql<MainDataLocal, {}, Props>(mainPageLocalDataQuery),
   graphql<MainDataQuery, InputProps, Props>(mainDataQuery, {
     options: {
       variables: {
         limit: 100
       }
     }
-  })
+  }),
+  graphql<MainDataLocal, {}, Props>(mainPageLocalDataQuery, { name: 'clientData' })
 )
 
 class Main extends React.PureComponent<Props> {
@@ -28,7 +28,7 @@ class Main extends React.PureComponent<Props> {
           {person.firstName} {person.lastName}
         </div> : null) : null}
       <div>
-        Is connected: {this.props.data && this.props.data.networkStatus.isConnected ? this.props.data.networkStatus.isConnected.toString() : 'false'}
+        Is connected: {this.props.clientData.networkStatus.isConnected ? this.props.clientData.networkStatus.isConnected.toString() : 'false'}
       </div>
     </div>
   }
