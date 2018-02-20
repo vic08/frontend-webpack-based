@@ -1,10 +1,16 @@
 import * as React from 'react'
-import { graphql, QueryProps } from 'react-apollo'
+import { graphql, QueryProps, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import { MainDataQuery } from '@@types'
 
+interface ClientData {
+  networkStatus: {
+    isConnected: boolean | undefined
+  }
+}
+
 export type Props = {
-  data: MainDataQuery
+  data: MainDataQuery & ClientData
 } & QueryProps
 
 type InputProps = {}
@@ -25,13 +31,24 @@ const query = gql`
   }
 `
 
-const withData = graphql<MainDataQuery, InputProps, Props>(query, {
-  options: {
-    variables: {
-      limit: 100
-    }
+const localQuery = gql`
+  query MainDataLocal {
+    networkStatus @client {
+        isConnected
+      }
   }
-})
+`
+
+const withData = compose(
+  graphql<MainDataQuery, InputProps, Props>(query, {
+    options: {
+      variables: {
+        limit: 100
+      }
+    }
+  }),
+  graphql<ClientData, {}, Props>(localQuery)
+)
 
 class Main extends React.PureComponent<Props> {
 
@@ -44,6 +61,10 @@ class Main extends React.PureComponent<Props> {
         <div key={person.id} className='person'>
           {person.firstName} {person.lastName}
         </div> : null) : null}
+      <div>
+        Is
+        connected: {this.props.data.networkStatus.isConnected ? this.props.data.networkStatus.isConnected.toString() : 'false'}
+      </div>
     </div>
   }
 }
