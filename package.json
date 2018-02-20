@@ -51,7 +51,7 @@
     "test": "node scripts/test.js --env=jsdom",
     "lint-ts": "tslint --fix --project .",
     "lint-js": "eslint --ext .jsx,.js --fix",
-    "gen-types": "./scripts/generateQueryTypesTS.sh http://localhost:5000/graphql"
+    "gen-types": "./scripts/generateQueryTypes.sh http://localhost:5000/graphql"
   },
   "devDependencies": {
     "@types/graphql": "^0.12.4",
